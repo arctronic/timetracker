@@ -17,3 +17,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+// keytool -list -v -keystore "C:\Users\shiha\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
