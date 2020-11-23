@@ -20,7 +20,7 @@ class signInButton extends CustomRaisedButton {
             ),
           ),
           color: color,
-          radius: BorderRadius,
+          borderRadius: BorderRadius,
           onPressed: onPressed,
           height: height,
         );
