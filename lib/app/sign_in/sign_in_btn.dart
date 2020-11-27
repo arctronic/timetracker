@@ -2,16 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:time_tracker/app/common_widget/custom_raised_button.dart';
 import 'package:flutter/material.dart';
 
+// ignore: camel_case_types
 class signInButton extends CustomRaisedButton {
   signInButton({
     String text,
     double height,
-    double BorderRadius:10.0,
+    // ignore: non_constant_identifier_names
+    double BorderRadius: 10.0,
     Color color,
     Color textColor,
     VoidCallback onPressed,
-  }) : assert(BorderRadius!=null),
-  super(
+  })  : assert(BorderRadius != null),
+        super(
           child: Text(
             text,
             style: TextStyle(
