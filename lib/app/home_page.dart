@@ -13,6 +13,31 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  Future<void> _confirmSignOut(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Log Out'),
+            content: Text('Are you sure that you want to logout?'),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    _signOut();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Logout')),
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +53,9 @@ class HomePage extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            onPressed: _signOut,
+            onPressed: () {
+              _confirmSignOut(context);
+            },
           ),
         ],
       ),
