@@ -18,6 +18,8 @@ abstract class AuthBase {
   Stream<AppUser> get authStateChanges;
   Future<AppUser> signInWithGoogle();
   Future<AppUser> signInWithFacebook();
+  Future<AppUser> signInWithEmailAndPassword(String email, String pass);
+  Future<AppUser> createUserWithEmailAndPassword(String email, String pass);
 }
 
 class Auth implements AuthBase {
@@ -86,6 +88,21 @@ class Auth implements AuthBase {
         message: 'Sign in aborted by user',
       );
     }
+  }
+
+  @override
+  Future<AppUser> signInWithEmailAndPassword(String email, String pass) async {
+    final authResult = await _fireBaseAuth.signInWithEmailAndPassword(
+        email: email, password: pass);
+    return _userFromFirebase(authResult.user);
+  }
+
+  @override
+  Future<AppUser> createUserWithEmailAndPassword(
+      String email, String pass) async {
+    final authResult = await _fireBaseAuth.createUserWithEmailAndPassword(
+        email: email, password: pass);
+    return _userFromFirebase(authResult.user);
   }
 
   @override
