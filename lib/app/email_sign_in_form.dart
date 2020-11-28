@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:time_tracker/app/common_widget/platform_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
 
 enum SignInFormType { sign, reg }
 
 class EmailSignInForm extends StatefulWidget {
-  EmailSignInForm({@required this.auth});
-  final AuthBase auth;
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -24,26 +27,18 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       _isLoading = true;
     });
     try {
+      final auth = Provider.of<AuthBase>(context);
       if (_formType == SignInFormType.sign)
-        await widget.auth.signInWithEmailAndPassword(_email, _pass);
+        await auth.signInWithEmailAndPassword(_email, _pass);
       else
-        await widget.auth.createUserWithEmailAndPassword(_email, _pass);
+        await auth.createUserWithEmailAndPassword(_email, _pass);
       Navigator.of(context).pop();
-    } catch (e) {
-      print(e.toString());
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Sign in failed'),
-              content: Text(e.toString()),
-              actions: [
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('OK')),
-              ],
-            );
-          });
+    } on PlatformException catch (e) {
+      PlatformAlertDialog(
+        title: 'Sign In failed',
+        content: e.message,
+        defaultActionText: 'OK',
+      ).show(context);
     } finally {
       setState(() {
         _isLoading = false;
