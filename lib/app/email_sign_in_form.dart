@@ -17,8 +17,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   final TextEditingController _passwordController = TextEditingController();
   String get _email => _emailController.text;
   String get _pass => _passwordController.text;
+  bool _isLoading = false;
 
   void _submit() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       if (_formType == SignInFormType.sign)
         await widget.auth.signInWithEmailAndPassword(_email, _pass);
@@ -27,6 +31,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -51,7 +59,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       TextFormField(
         //onChanged: (val) => email = val,
         controller: _emailController,
+        textInputAction: TextInputAction.next,
         decoration: InputDecoration(
+          enabled: _isLoading == false,
           labelText: 'Email',
           hintText: 'test@email.com',
           enabledBorder: OutlineInputBorder(
@@ -72,11 +82,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       SizedBox(height: 16.0),
       TextFormField(
         controller: _passwordController,
+        textInputAction: TextInputAction.next,
         obscureText: true,
-        validator: (val) =>
-            val.length < 8 ? 'Password must be 8 chars long' : null,
         decoration: InputDecoration(
+          enabled: _isLoading == false,
           labelText: 'Password',
+          //errorText: _passwordController.text.length < 8 && submitted? 'Please enter atleast 8 chars!':null,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.brown,
@@ -99,11 +110,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         textColor: Colors.white,
         focusElevation: 5.0,
         focusColor: Colors.brown[400],
-        onPressed: _submit,
+        onPressed: !_isLoading ? _submit : null,
       ),
       //SizedBox(height: 5.0),
       FlatButton(
-          onPressed: _toogleFormType,
+          onPressed: !_isLoading ? _toogleFormType : null,
           child: Text(
             secondaryText,
             style: TextStyle(
