@@ -39,8 +39,6 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         title: 'Sign In failed',
         exception: e,
       ).show(context);
-    } catch (e) {
-     // print(e.toString());
     } finally {
       setState(() {
         _isLoading = false;

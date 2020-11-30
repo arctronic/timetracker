@@ -6,31 +6,58 @@ import 'package:time_tracker/app/sign_in/social_sign_in_btn.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/services/auth_provider.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isLoading = false;
   Future signInAnon(BuildContext context) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       final auth = Provider.of<AuthBase>(context);
       await auth.signInAnonymously();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   Future signInWithGoogle(BuildContext context) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       final auth = Provider.of<AuthBase>(context);
       await auth.signInWithGoogle();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   Future signInWithFacebook(BuildContext context) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       final auth = Provider.of<AuthBase>(context);
       await auth.signInWithFacebook();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -60,14 +87,7 @@ class SignInPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Sign in',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            SizedBox(height: 50.0, child: _buildHeader()),
             SizedBox(height: 8.0),
             SocialSignInButton(
               icon: 'assets/google.png',
@@ -75,7 +95,7 @@ class SignInPage extends StatelessWidget {
               textColor: Colors.black87,
               color: Colors.white,
               height: 50.0,
-              onPressed: () => signInWithGoogle(context),
+              onPressed: _isLoading? null : () => signInWithGoogle(context),
             ),
             SizedBox(height: 8.0),
             SocialSignInButton(
@@ -84,7 +104,7 @@ class SignInPage extends StatelessWidget {
               textColor: Colors.white,
               color: Color(0xFF334D92),
               height: 50.0,
-              onPressed: () => signInWithFacebook(context),
+              onPressed:_isLoading? null : () => signInWithFacebook(context),
             ),
             SizedBox(height: 8.0),
             signInButton(
@@ -92,7 +112,7 @@ class SignInPage extends StatelessWidget {
               textColor: Colors.white,
               color: Colors.brown,
               height: 50.0,
-              onPressed: () => signInWithEmail(context),
+              onPressed:_isLoading? null : () => signInWithEmail(context),
             ),
             SizedBox(height: 8.0),
             Text(
@@ -106,11 +126,28 @@ class SignInPage extends StatelessWidget {
               textColor: Colors.white,
               color: Colors.redAccent,
               height: 50,
-              onPressed: () => signInAnon(context),
+              onPressed:_isLoading? null : () => signInAnon(context),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildHeader() {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return Text(
+        'Sign in',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 30.0,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
   }
 }
