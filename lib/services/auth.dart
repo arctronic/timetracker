@@ -13,9 +13,9 @@ class AppUser {
 
 abstract class AuthBase {
   AppUser currentUser();
-  Future<AppUser> signInAnonymously();
   Future<void> signOut();
   Stream<AppUser> get authStateChanges;
+  Future<AppUser> signInAnonymously();
   Future<AppUser> signInWithGoogle();
   Future<AppUser> signInWithFacebook();
   Future<AppUser> signInWithEmailAndPassword(String email, String pass);
