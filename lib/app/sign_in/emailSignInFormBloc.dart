@@ -5,16 +5,35 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker/app/common_widget/platform_alert_dialog.dart';
 import 'package:time_tracker/app/common_widget/platform_exception_alert.dart';
+import 'package:time_tracker/app/sign_in/email_signin_bloc.dart';
 import 'package:time_tracker/services/auth.dart';
+
+import 'emailSignInModel.dart';
 
 enum SignInFormType { sign, reg }
 
-class EmailSignInForm extends StatefulWidget {
+class EmailSignInFormBloc extends StatefulWidget {
+  const EmailSignInFormBloc({@ required this.bloc});
+  final EmailSignInBloc bloc;
+
+  
+
+  static Widget create(BuildContext context){
+    final AuthBase auth = Provider.of<AuthBase>(context);
+    // ignore: missing_required_param
+    return Provider<EmailSignInBloc>(
+      create: (context) => EmailSignInBloc(auth: auth),
+      child: Consumer<EmailSignInBloc>(
+        builder: (context,bloc,_)=> EmailSignInFormBloc(bloc: bloc),
+      ),
+      dispose: (context,bloc) => bloc.dispose(),
+    );
+  }
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
 
-class _EmailSignInFormState extends State<EmailSignInForm> {
+class _EmailSignInFormState extends State<EmailSignInFormBloc> {
   SignInFormType _formType = SignInFormType.sign;
 
   final TextEditingController _emailController = TextEditingController();
@@ -22,6 +41,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _email => _emailController.text;
   String get _pass => _passwordController.text;
   bool _isLoading = false;
+
+  
 
   Future<void> _submit() async {
     setState(() {
@@ -135,13 +156,19 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: _buildChildren(),
-      ),
+    return StreamBuilder<EmailSignInModel>(
+      stream: widget.bloc.modelStream,
+      initialData: EmailSignInModel(),
+      builder: (context, snapshot) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: _buildChildren(),
+          ),
+        );
+      }
     );
   }
 }
